@@ -1,0 +1,19 @@
+[tasks]
+taskcover prove_cover
+taskbmc   prove_bmc
+
+[options]
+prove_cover: mode cover
+prove_cover: depth 30
+prove_bmc:   mode bmc
+prove_bmc:   depth 30
+
+[engines]
+smtbmc
+
+[files]
+../src/Traffic_Light.v
+
+[script]
+read -formal ../src/Traffic_Light.v
+prep -top Traffic_Light

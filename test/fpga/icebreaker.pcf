@@ -1,0 +1,35 @@
+# Pin constraints for iCEbreaker FPGA
+# Traffic Light Controller — fpga_top
+
+# Clock (12 MHz onboard oscillator)
+set_io -nowarn CLK        35
+
+# Inputs
+set_io -nowarn BTN_N      10   # Reset (active-low onboard button)
+set_io -nowarn BTN1       20   # Pedestrian request (PMOD2 button)
+
+# Hauptstraße — onboard RGB LED (active-low, inverted in fpga_top.v)
+set_io -nowarn LEDR_N     11   # main_red
+set_io -nowarn LEDG_N     37   # main_green
+set_io -nowarn LED_BLU_N  41   # main_yellow
+
+# Nebenstraße — PMOD2 LEDs (active-high)
+set_io -nowarn LED1       26   # side_red
+set_io -nowarn LED2       27   # side_yellow
+set_io -nowarn LED4       23   # side_green
+
+# Fußgänger — PMOD2 LEDs (active-high)
+set_io -nowarn LED3       25   # ped_green
+set_io -nowarn LED5       21   # ped_red
+
+# 7-Segment Segmente via PMOD1A (active-high)
+set_io -nowarn P1A1        4   # SEG_A — oben
+set_io -nowarn P1A2        2   # SEG_B — oben rechts
+set_io -nowarn P1A3       47   # SEG_C — unten rechts
+set_io -nowarn P1A4       45   # SEG_D — unten
+set_io -nowarn P1A7        3   # SEG_E — unten links
+set_io -nowarn P1A8       48   # SEG_F — oben links
+set_io -nowarn P1A9       46   # SEG_G — mitte
+
+# Common Anode Ziffer 1 via PMOD1B (active-high, dauerhaft 1)
+set_io -nowarn P1B1       43   # CA1 — Ziffer 1 (State-Anzeige)

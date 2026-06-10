@@ -1,0 +1,19 @@
+[tasks]
+taskcover prove_cover
+taskbmc   prove_bmc
+
+[options]
+prove_cover: mode cover
+prove_cover: depth 20
+prove_bmc:   mode bmc
+prove_bmc:   depth 20
+
+[engines]
+smtbmc
+
+[files]
+../src/Timer.v
+
+[script]
+read -formal ../src/Timer.v
+prep -top timer

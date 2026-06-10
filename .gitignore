@@ -11,3 +11,12 @@ test/sim_build
 test/__pycache__/
 test/results.xml
 test/gate_level_netlist.v
+
+test/timer/
+test/timer_taskbmc/
+test/timer_taskcover/
+test/Traffic_Light/
+test/Traffic_Light_taskbmc/
+test/Traffic_Light_taskcover/
+
+test/fpga/fpga_top/
