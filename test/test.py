@@ -110,7 +110,7 @@ async def val02_sequence_no_ped(dut):
 # ================================================================
 @cocotb.test()
 async def val03_sequence_with_ped(dut):
-    cocotb.start_soon(Clock(dut.clk, 10, unit="ns").start())
+    cocotb.start_soon(Clock(dut.clk, 83.33333333333, unit="ns").start()) # 12 MHz clock
     await do_reset(dut)
 
     dut._log.info("VAL-03: State sequence with pedestrian request")
