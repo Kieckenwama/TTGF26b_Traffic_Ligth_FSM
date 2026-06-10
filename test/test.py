@@ -12,11 +12,11 @@ from cocotb.triggers import RisingEdge, ClockCycles
 # ----------------------------------------------------------------
 # Phase durations — must match localparams in tb_top.v exactly
 # ----------------------------------------------------------------
-MAIN_GREEN_TIME  = 5
-MAIN_YELLOW_TIME = 3
-SIDE_GREEN_TIME  = 4
-SIDE_YELLOW_TIME = 3
-PED_GREEN_TIME   = 4
+MAIN_GREEN_TIME  = 5*12000000 # 12 MHz clock → 5 Sekunden
+MAIN_YELLOW_TIME = 3*12000000 # 12 MHz clock → 3 Sekunden
+SIDE_GREEN_TIME  = 4*12000000 # 12 MHz clock → 4 Sekunden
+SIDE_YELLOW_TIME = 3*12000000 # 12 MHz clock → 3 Sekunden
+PED_GREEN_TIME   = 4*12000000 # 12 MHz clock → 4 Sekunden
 
 # State encoding — must match Traffic_Light.v localparams
 S0, S1, S2, S3, S4 = 0, 1, 2, 3, 4
@@ -37,7 +37,7 @@ async def do_reset(dut):
 # state is a port of Traffic_Light, accessed via the submodule
 # ----------------------------------------------------------------
 def get_state(dut):
-    return int(dut.u_Traffic_Light.state.value)
+    return int(dut.user_project.top.u_Traffic_Light.state.value)
 
 # ----------------------------------------------------------------
 # Helper: wait until FSM reaches target state (with timeout)
