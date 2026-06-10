@@ -30,12 +30,21 @@ module top (
     // ---------------------------------------------------------------
     // Phase durations (clock cycles) — configurable via localparam
     // ---------------------------------------------------------------
-    localparam [31:0]
-        MAIN_GREEN_TIME  = 32'd120_000_000, //  10 Sekunden
-        MAIN_YELLOW_TIME = 32'd24_000_000,  //  2 Sekunden
-        SIDE_GREEN_TIME  = 32'd60_000_000,  //  5 Sekunden
-        SIDE_YELLOW_TIME = 32'd24_000_000,  //  2 Sekunden
-        PED_GREEN_TIME   = 32'd36_000_000;  //  3 Sekunden
+    `ifdef SIM
+        localparam [31:0]
+            MAIN_GREEN_TIME  = 32'5,
+            MAIN_YELLOW_TIME = 32'3, 
+            SIDE_GREEN_TIME  = 32'3, 
+            SIDE_YELLOW_TIME = 32'3,
+            PED_GREEN_TIME   = 32'4;  
+    `else
+        localparam [31:0]
+            MAIN_GREEN_TIME  = 32'd120_000_000, //  10 Sekunden
+            MAIN_YELLOW_TIME = 32'd24_000_000,  //  2 Sekunden
+            SIDE_GREEN_TIME  = 32'd60_000_000,  //  5 Sekunden
+            SIDE_YELLOW_TIME = 32'd24_000_000,  //  2 Sekunden
+            PED_GREEN_TIME   = 32'd36_000_000;  //  3 Sekunden
+    `endif
 
     // ---------------------------------------------------------------
     // Internal signals
