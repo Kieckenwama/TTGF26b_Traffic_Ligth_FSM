@@ -1,10 +1,13 @@
 # cocotb Testbench: Traffic Light Controller
 # Tests: VAL-02, VAL-03, VAL-07, VAL-08, VAL-09
 #
-# DUT is tb_top, which wraps Traffic_Light + timer with short
-# phase durations for fast simulation.
-# All durations must match the localparams in tb_top.v.
+# DUT is top, which wraps Traffic_Light + timer 
 
+# RTL simulation: state read from internal register, timer count checked
+# GL  simulation: state reconstructed from uo_out LED signals,
+#                 timer count check skipped (internal signals not accessible)
+ 
+import os
 import cocotb
 from cocotb.clock import Clock
 from cocotb.triggers import RisingEdge, ClockCycles
@@ -23,9 +26,16 @@ S0, S1, S2, S3, S4 = 0, 1, 2, 3, 4
 STATE_NAMES = {S0: "S0", S1: "S1", S2: "S2", S3: "S3", S4: "S4"}
 
 # ----------------------------------------------------------------
-# Helper: apply reset for 2 cycles then release
+# Helper: apply reset
 # ----------------------------------------------------------------
 async def do_reset(dut):
+    dut.rst_n.value  = 0
+    dut.ui_in.value  = 0
+    dut.ena.value    = 1
+    dut.uio_in.value = 0
+    await ClockCycles(dut.clk, 2)
+    dut.rst_n.value  = 1
+    await RisingEdge(dut.clk)
     dut.rst_n.value   = 0
     dut.ped_req.value = 0
     await ClockCycles(dut.clk, 2)
@@ -33,15 +43,37 @@ async def do_reset(dut):
     await RisingEdge(dut.clk)
 
 # ----------------------------------------------------------------
-# Helper: get current FSM state
-# state is a port of Traffic_Light, accessed via the submodule
+# Helper: get FSM state
+# RTL: reads internal state register directly via hierarchy
+# GL:  reconstructs state from uo_out LED outputs
+#      uo_out bit mapping (from info.yaml pinout):
+#        [0] main_green  [1] main_yellow  [2] main_red
+#        [3] side_green  [4] side_yellow  [5] side_red
+#        [6] ped_green   [7] ped_red
+
 # ----------------------------------------------------------------
 def get_state(dut):
-    return int(dut.user_project.top.u_Traffic_Light.state.value)
+    if os.environ.get("GATES") == "yes":
+        # GL simulation: reconstruct from output signals
+        uo = int(dut.uo_out.value)
+        main_green  = (uo >> 0) & 1
+        main_yellow = (uo >> 1) & 1
+        side_green  = (uo >> 3) & 1
+        side_yellow = (uo >> 4) & 1
+        ped_green   = (uo >> 6) & 1
+ 
+        if   main_green  == 1: return S0
+        elif main_yellow == 1: return S1
+        elif side_green  == 1: return S2
+        elif side_yellow == 1: return S3
+        elif ped_green   == 1: return S4
+        else:                  return -1  # ungültige Kombination
+    else:
+        # RTL simulation: read internal state register
+        return int(dut.user_project.u_top.u_Traffic_Light.state.value)
 
 # ----------------------------------------------------------------
 # Helper: wait until FSM reaches target state (with timeout)
-# Gibt zurück sobald state == target, egal ob bereits drin
 # ----------------------------------------------------------------
 async def wait_for_state(dut, target, timeout=300):
     for _ in range(timeout):
@@ -54,8 +86,6 @@ async def wait_for_state(dut, target, timeout=300):
 
 # ----------------------------------------------------------------
 # Helper: wait until FSM FRESHLY enters target state
-# Gibt erst zurück wenn state gerade von einem anderen State
-# auf target gewechselt hat — also am ersten Takt im neuen State
 # ----------------------------------------------------------------
 async def wait_for_fresh_state(dut, target, timeout=300):
     prev = get_state(dut)
@@ -68,6 +98,12 @@ async def wait_for_fresh_state(dut, target, timeout=300):
     raise AssertionError(
         f"Timeout: fresh entry into {STATE_NAMES[target]} not seen within {timeout} cycles"
     )
+
+# ----------------------------------------------------------------
+# Helper: set ped_req via ui_in[0]
+# ----------------------------------------------------------------
+def set_ped_req(dut, val):
+    dut.ui_in.value = int(val) & 0x01
 
 # ================================================================
 # VAL-02: State sequence without pedestrian request
@@ -204,6 +240,7 @@ async def val08_timer_reset_on_transition(dut):
 
     dut._log.info("VAL-08: Timer reset on state transition")
 
+    gl_mode    = os.environ.get("GATES") == "yes"
     transitions = 0
     last_state  = get_state(dut)
 
@@ -217,13 +254,22 @@ async def val08_timer_reset_on_transition(dut):
             prev       = last_state
             last_state = cur
             await RisingEdge(dut.clk)
-            count = int(dut.user_project.top.u_timer.count.value)
-            assert count == 0, \
-                f"VAL-08 FAIL: timer count={count} after " \
-                f"{STATE_NAMES[prev]}->{STATE_NAMES[cur]}, expected 0"
-            dut._log.info(
-                f"  {STATE_NAMES[prev]}->{STATE_NAMES[cur]}: count={count} OK"
-            )
+
+            
+            if gl_mode:
+                # GL: cannot access internal signals — log transition only
+                dut._log.info(
+                    f"  {STATE_NAMES[prev]}->{STATE_NAMES[cur]}: "
+                    f"GL mode, timer count check skipped"
+                )
+            else:
+                count = int(dut.user_project.top.u_timer.count.value)
+                assert count == 0, \
+                    f"VAL-08 FAIL: timer count={count} after " \
+                    f"{STATE_NAMES[prev]}->{STATE_NAMES[cur]}, expected 0"
+                dut._log.info(
+                    f"  {STATE_NAMES[prev]}->{STATE_NAMES[cur]}: count={count} OK"
+                )
             transitions += 1
 
         if transitions >= 5:
