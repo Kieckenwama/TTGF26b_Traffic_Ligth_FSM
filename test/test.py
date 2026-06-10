@@ -217,7 +217,7 @@ async def val08_timer_reset_on_transition(dut):
             prev       = last_state
             last_state = cur
             await RisingEdge(dut.clk)
-            count = int(dut.u_timer.count.value)
+            count = int(dut.user_project.u_top.u_timer.count.value)
             assert count == 0, \
                 f"VAL-08 FAIL: timer count={count} after " \
                 f"{STATE_NAMES[prev]}->{STATE_NAMES[cur]}, expected 0"
