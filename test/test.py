@@ -12,11 +12,11 @@ from cocotb.triggers import RisingEdge, ClockCycles
 # ----------------------------------------------------------------
 # Phase durations — must match localparams in tb_top.v exactly
 # ----------------------------------------------------------------
-MAIN_GREEN_TIME  = 5*12000000 # 12 MHz clock → 5 Sekunden
-MAIN_YELLOW_TIME = 3*12000000 # 12 MHz clock → 3 Sekunden
-SIDE_GREEN_TIME  = 4*12000000 # 12 MHz clock → 4 Sekunden
-SIDE_YELLOW_TIME = 3*12000000 # 12 MHz clock → 3 Sekunden
-PED_GREEN_TIME   = 4*12000000 # 12 MHz clock → 4 Sekunden
+MAIN_GREEN_TIME  = 5
+MAIN_YELLOW_TIME = 3
+SIDE_GREEN_TIME  = 4
+SIDE_YELLOW_TIME = 3
+PED_GREEN_TIME   = 4
 
 # State encoding — must match Traffic_Light.v localparams
 S0, S1, S2, S3, S4 = 0, 1, 2, 3, 4
@@ -110,7 +110,7 @@ async def val02_sequence_no_ped(dut):
 # ================================================================
 @cocotb.test()
 async def val03_sequence_with_ped(dut):
-    cocotb.start_soon(Clock(dut.clk, 83.333, unit="ns").start()) # 12 MHz clock
+    cocotb.start_soon(Clock(dut.clk, 84, unit="ns").start()) # 12 MHz clock
     await do_reset(dut)
 
     dut._log.info("VAL-03: State sequence with pedestrian request")
