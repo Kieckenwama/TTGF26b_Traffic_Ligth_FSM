@@ -70,7 +70,7 @@ def get_state(dut):
         else:                  return -1  # ungültige Kombination
     else:
         # RTL simulation: read internal state register
-        return int(dut.user_project.u_top.u_Traffic_Light.state.value)
+        return int(dut.user_project.top.u_Traffic_Light.state.value)
 
 # ----------------------------------------------------------------
 # Helper: wait until FSM reaches target state (with timeout)
