@@ -1,9 +1,9 @@
 # Tiny Tapeout project information
 project:
-  title:        "Traffic_Light_FSM"      # Project title
+  title:        "Traffic Light FSM"      # Project title
   author:       "Eric Kiecksee"      # Your name
   discord:      "kieckenwama"      # Your discord username, for communication and automatically assigning you a Tapeout role (optional)
-  description:  "Simple traffic light for intersection"      # One line description of what your project does
+  description:  "Simple traffic light FSM for intersection with main road, side road and pedestrian phases"      # One line description of what your project does
   language:     "Verilog" # other examples include SystemVerilog, Amaranth, VHDL, etc
   clock_hz:     12000000       # Clock frequency in Hz (or 0 if not applicable)
 
