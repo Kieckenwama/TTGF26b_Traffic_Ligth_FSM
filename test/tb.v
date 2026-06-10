@@ -25,18 +25,18 @@ module tb ();
   wire  [7:0] ui_in = {7'b0, ped_req}
 
   // Main road lights
-  wire  main_green = uo_out[0],
-  wire  main_yellow = uo_out[1],
-  wire  main_red = uo_out[2],
+  wire  main_green = uo_out[0];
+  wire  main_yellow = uo_out[1];
+  wire  main_red = uo_out[2];
 
   // Side road lights
-  wire  side_green = uo_out[3],
-  wire  side_yellow = uo_out[4],
-  wire  side_red = uo_out[5],
+  wire  side_green = uo_out[3];
+  wire  side_yellow = uo_out[4];
+  wire  side_red = uo_out[5];
 
   // Pedestrian lights
-  wire  ped_green = uo_out[6],
-  wire  ped_red = uo_out[7]
+  wire  ped_green = uo_out[6];
+  wire  ped_red = uo_out[7];
 
 
 `ifdef GL_TEST
