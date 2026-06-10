@@ -32,11 +32,11 @@ module top (
     // ---------------------------------------------------------------
     `ifdef SIM
         localparam [31:0]
-            MAIN_GREEN_TIME  = 32'5,
-            MAIN_YELLOW_TIME = 32'3, 
-            SIDE_GREEN_TIME  = 32'3, 
-            SIDE_YELLOW_TIME = 32'3,
-            PED_GREEN_TIME   = 32'4;  
+            MAIN_GREEN_TIME  = 32'd5,
+            MAIN_YELLOW_TIME = 32'd3,
+            SIDE_GREEN_TIME  = 32'd4,
+            SIDE_YELLOW_TIME = 32'd3,
+            PED_GREEN_TIME   = 32'd4;
     `else
         localparam [31:0]
             MAIN_GREEN_TIME  = 32'd120_000_000, //  10 Sekunden
