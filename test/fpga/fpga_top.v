@@ -25,7 +25,7 @@
 //   State wird aus den LED-Ausgängen rückgeschlossen (kein state-Port nötig).
 //   Bei ungültiger Kombination: E (Error)
 //
-// Segmente via PMOD1A (active-high):
+// Segmente via PMOD1A (active-low):
 //   SEG_A → P1A1  (Pin  4)
 //   SEG_B → P1A2  (Pin  2)
 //   SEG_C → P1A3  (Pin 47)
@@ -51,7 +51,7 @@ module fpga_top (
     output wire LED4,
     output wire LED5,
 
-    // 7-Segment Segmente via PMOD1A (active-high)
+   // 7-Segment Segmente via PMOD1A (active-low)
     output wire P1A1,   // SEG_A
     output wire P1A2,   // SEG_B
     output wire P1A3,   // SEG_C
@@ -145,14 +145,14 @@ module fpga_top (
         endcase
     end
 
-    // Segmente auf PMOD1A ausgeben
-    assign P1A1 = seg[6]; // SEG_A
-    assign P1A2 = seg[5]; // SEG_B
-    assign P1A3 = seg[4]; // SEG_C
-    assign P1A4 = seg[3]; // SEG_D
-    assign P1A7 = seg[2]; // SEG_E
-    assign P1A8 = seg[1]; // SEG_F
-    assign P1A9 = seg[0]; // SEG_G
+    // Segmente auf PMOD1A ausgeben (invertiert, da Display aktiv-low reagiert)
+    assign P1A1 = ~seg[6]; // SEG_A
+    assign P1A2 = ~seg[5]; // SEG_B
+    assign P1A3 = ~seg[4]; // SEG_C
+    assign P1A4 = ~seg[3]; // SEG_D
+    assign P1A7 = ~seg[2]; // SEG_E
+    assign P1A8 = ~seg[1]; // SEG_F
+    assign P1A9 = ~seg[0]; // SEG_G
 
     // Common Anode Ziffer 1 dauerhaft aktiv
     assign P1B1 = 1'b1;
