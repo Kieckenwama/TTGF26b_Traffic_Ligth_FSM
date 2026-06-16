@@ -3,10 +3,10 @@
 ## Test Setup
 
 **Board:** iCEbreaker (Lattice iCE40UP5K, package sg48)  
-**Bitstream:** `test/fpga/fpga_top/fpga_top.bin`  
+**Bitstream:** `test/fpga/build/traffic_light.bin`  
 **Clock frequency:** 12 MHz (onboard oscillator)  
-**Date:** <!-- date of test -->  
-**Tester:** <!-- name -->  
+**Date:** 16.06.2026  
+**Tester:** Eric Kiecksee  
 
 ---
 
@@ -67,15 +67,16 @@ Auf der nächsten steigenden Taktflanke nach Loslassen prüfen.
 
 | Condition     | RGB LED       | LED1 | LED2 | LED3 | LED4 | LED5 | 7-Seg | Measured | Pass/Fail |
 |---------------|---------------|------|------|------|------|------|-------|----------|-----------|
-| During reset  | rot           | 1    | 0    | 0    | 0    | 1    | —     | <!-- --> | |
-| After release | grün          | 1    | 0    | 0    | 0    | 1    | **0** | <!-- --> | |
+| During reset  | rot           | 1    | 0    | 0    | 0    | 1    | —     | wie erwartet | PASS |
+| After release | grün          | 1    | 0    | 0    | 0    | 1    | **0** | wie erwartet | PASS |
 
 **Pass criterion:** Nach Loslassen von BTN_N leuchtet die RGB-LED grün,
 LED1 und LED5 leuchten, alle anderen LEDs aus. 7-Segment zeigt **0**.
 
-**Observations:** <!-- describe what was observed -->
+**Observations:** Nach Loslassen von BTN_N wechselte die RGB-LED sofort auf
+grün, 7-Segment zeigte 0. Verhalten entsprach exakt der Spezifikation.
 
-**Result:** <!-- PASS / FAIL -->
+**Result:** PASS
 
 ---
 
@@ -87,17 +88,20 @@ Die 7-Segment-Anzeige zeigt dabei kontinuierlich den aktuellen State.
 
 | State | RGB LED | LED1 | LED2 | LED3 | LED4 | LED5 | 7-Seg | Duration | Measured | Pass/Fail |
 |-------|---------|------|------|------|------|------|-------|----------|----------|-----------|
-| S0    | grün    | 1    | 0    | 0    | 0    | 1    | **0** | 10 s | <!-- --> | |
-| S1    | blau    | 1    | 0    | 0    | 0    | 1    | **1** |  2 s | <!-- --> | |
-| S2    | rot     | 0    | 0    | 0    | 1    | 1    | **2** |  5 s | <!-- --> | |
-| S3    | rot     | 0    | 1    | 0    | 0    | 1    | **3** |  2 s | <!-- --> | |
+| S0    | grün    | 1    | 0    | 0    | 0    | 1    | **0** | 10 s | wie erwartet | PASS |
+| S1    | blau    | 1    | 0    | 0    | 0    | 1    | **1** |  2 s | wie erwartet | PASS |
+| S2    | rot     | 0    | 0    | 0    | 1    | 1    | **2** |  5 s | wie erwartet | PASS |
+| S3    | rot     | 0    | 1    | 0    | 0    | 1    | **3** |  2 s | wie erwartet | PASS |
 
 **Pass criterion:** S4 wird nie eingetreten (7-Segment zeigt nie **4**).
 Sequenz S0→S1→S2→S3→S0 wiederholt sich. Kein **E** erscheint.
 
-**Observations:** <!-- describe what was observed -->
+**Observations:** Die FSM durchlief ohne Fußgängeranforderung korrekt die
+Sequenz S0→S1→S2→S3→S0 in dauerhafter Wiederholung. S4 wurde zu keinem
+Zeitpunkt eingenommen. Die gemessenen Phasenzeiten entsprachen den
+spezifizierten Werten (10 s / 2 s / 5 s / 2 s).
 
-**Result:** <!-- PASS / FAIL -->
+**Result:** PASS
 
 ---
 
@@ -109,20 +113,24 @@ eingetreten wird (7-Segment wechselt von **1** auf **4**).
 
 | State | RGB LED | LED1 | LED2 | LED3 | LED4 | LED5 | 7-Seg | Duration | Measured | Pass/Fail |
 |-------|---------|------|------|------|------|------|-------|----------|----------|-----------|
-| S0    | grün    | 1    | 0    | 0    | 0    | 1    | **0** | 10 s | <!-- --> | |
-| S1    | blau    | 1    | 0    | 0    | 0    | 1    | **1** |  2 s | <!-- --> | |
-| S4    | rot     | 1    | 0    | 1    | 0    | 0    | **4** |  3 s | <!-- --> | |
-| S2    | rot     | 0    | 0    | 0    | 1    | 1    | **2** |  5 s | <!-- --> | |
-| S3    | rot     | 0    | 1    | 0    | 0    | 1    | **3** |  2 s | <!-- --> | |
-| S0    | grün    | 1    | 0    | 0    | 0    | 1    | **0** | 10 s | <!-- --> | |
+| S0    | grün    | 1    | 0    | 0    | 0    | 1    | **0** | 10 s | wie erwartet | PASS |
+| S1    | blau    | 1    | 0    | 0    | 0    | 1    | **1** |  2 s | wie erwartet | PASS |
+| S4    | rot     | 1    | 0    | 1    | 0    | 0    | **4** |  3 s | wie erwartet | PASS |
+| S2    | rot     | 0    | 0    | 0    | 1    | 1    | **2** |  5 s | wie erwartet | PASS |
+| S3    | rot     | 0    | 1    | 0    | 0    | 1    | **3** |  2 s | wie erwartet | PASS |
+| S0    | grün    | 1    | 0    | 0    | 0    | 1    | **0** | 10 s | wie erwartet | PASS |
 
 **Pass criterion:** 7-Segment wechselt die Sequenz **0→1→4→2→3→0**.
 In S4 leuchtet LED3 (ped_green) und 7-Segment zeigt **4**.
 BTN1 war bereits vor S1 losgelassen.
 
-**Observations:** <!-- describe what was observed -->
+**Observations:** Nach kurzem Drücken von BTN1 während S0 wechselte die
+FSM nach S1 korrekt direkt in S4 (7-Segment 1→4), obwohl BTN1 bereits vor
+Erreichen von S1 wieder losgelassen wurde. Dies bestätigt die korrekte
+Latch-Funktion der Fußgängeranforderung (REQ-09). Anschließend lief die
+Sequenz S4→S2→S3→S0 wie spezifiziert weiter.
 
-**Result:** <!-- PASS / FAIL -->
+**Result:** PASS
 
 ---
 
@@ -134,28 +142,37 @@ ungültige Signalkombination und damit einen FSM-Fehler anzeigen.
 
 | Condition                              | Required         | Observed | Pass/Fail |
 |----------------------------------------|------------------|----------|-----------|
-| 7-Segment zeigt nie **E**              | immer gültig     | <!-- --> | |
-| RGB grün + LED4 (side_green)           | nie gleichzeitig | <!-- --> | |
-| RGB grün + LED3 (ped_green)            | nie gleichzeitig | <!-- --> | |
-| LED3 (ped_green) + LED4 (side_green)   | nie gleichzeitig | <!-- --> | |
+| 7-Segment zeigt nie **E**              | immer gültig     | nie E aufgetreten | PASS |
+| RGB grün + LED4 (side_green)           | nie gleichzeitig | nie gleichzeitig | PASS |
+| RGB grün + LED3 (ped_green)            | nie gleichzeitig | nie gleichzeitig | PASS |
+| LED3 (ped_green) + LED4 (side_green)   | nie gleichzeitig | nie gleichzeitig | PASS |
 
 **Pass criterion:** Die 7-Segment-Anzeige zeigt ausschließlich die
 Ziffern 0–4 und niemals **E**.
 
-**Observations:** <!-- describe what was observed -->
+**Observations:** Während der gesamten Beobachtungsdauer über mehrere
+vollständige Zyklen (mit und ohne Fußgängeranforderung) zeigte die
+7-Segment-Anzeige ausschließlich gültige Ziffern (0–4). Kein Fehlerzustand
+(E) wurde beobachtet, was die korrekte gegenseitige Ausschließung aller
+Lichtkombinationen bestätigt.
 
-**Result:** <!-- PASS / FAIL -->
+**Result:** PASS
 
 ---
 
 ## Overall Result
 
-| Test        | Description             | Result             |
-|-------------|-------------------------|--------------------|
-| Test 1      | Reset behaviour         | <!-- PASS/FAIL --> |
-| Test 2      | Normal state sequence   | <!-- PASS/FAIL --> |
-| Test 3      | Pedestrian request path | <!-- PASS/FAIL --> |
-| Test 4      | Mutual exclusion        | <!-- PASS/FAIL --> |
-| **Overall** |                         | <!-- PASS/FAIL --> |
+| Test        | Description             | Result  |
+|-------------|--------------------------|---------|
+| Test 1      | Reset behaviour          | PASS    |
+| Test 2      | Normal state sequence    | PASS    |
+| Test 3      | Pedestrian request path  | PASS    |
+| Test 4      | Mutual exclusion         | PASS    |
+| **Overall** |                          | **PASS** |
 
-**Summary:** <!-- brief description of overall FPGA test outcome -->
+**Summary:** Das auf den iCEbreaker FPGA geflashte Design verhielt sich in
+allen vier Testfällen wie spezifiziert. Reset-Verhalten, normale
+Zustandssequenz, Fußgänger-Latch-Mechanismus und gegenseitige
+Ausschließung aller Lichtkombinationen wurden erfolgreich verifiziert.
+Die gemessenen Phasenzeiten entsprachen den spezifizierten Werten.
+Das Design ist bereit für die Einreichung zum Tiny Tapeout Shuttle.
