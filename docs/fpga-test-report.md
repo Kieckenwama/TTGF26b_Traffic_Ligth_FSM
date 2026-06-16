@@ -176,3 +176,10 @@ Zustandssequenz, Fußgänger-Latch-Mechanismus und gegenseitige
 Ausschließung aller Lichtkombinationen wurden erfolgreich verifiziert.
 Die gemessenen Phasenzeiten entsprachen den spezifizierten Werten.
 Das Design ist bereit für die Einreichung zum Tiny Tapeout Shuttle.
+
+
+
+https://github.com/user-attachments/assets/b1a28d9f-6eaa-4f43-85a0-f08cc5fb954c
+
+
+
